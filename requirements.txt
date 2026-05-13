@@ -1,0 +1,52 @@
+# Core Framework
+fastapi
+uvicorn[standard]
+pydantic
+python-dotenv
+httpx
+
+# WhatsApp Automation
+playwright
+
+# Database
+sqlalchemy
+alembic
+aiosqlite
+asyncpg
+
+# Redis / Session
+redis
+aioredis
+
+# AI - Language Model
+groq
+
+# AI - Voice Notes
+openai-whisper
+ffmpeg-python
+
+# AI - OCR / Receipt Detection
+pytesseract
+Pillow
+opencv-python
+
+# AI - Language Detection
+langdetect
+
+# AI - RAG / Training Data
+chromadb
+sentence-transformers
+
+# Scheduling / Background Tasks
+apscheduler
+
+# Mobile Admin (Telegram)
+python-telegram-bot
+
+# Templates
+jinja2
+
+# Utilities
+pyyaml
+aiofiles
+python-multipart

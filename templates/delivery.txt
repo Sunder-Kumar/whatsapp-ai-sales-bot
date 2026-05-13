@@ -1,0 +1,13 @@
+✅ Sir aapka {package_name} ready hai!
+
+📧 Email: {login_email}
+🔑 Password: {login_password}
+📌 PIN: {profile_pin}
+
+⚙️ Setup Instructions:
+1. Open the {package_name} app.
+2. Enter the email and password above.
+3. Select your profile and enter the PIN if required.
+
+Koi issue ho to is number pe batayen.
+Shukriya aapki trust ka! 🙏

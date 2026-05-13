@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ bot_name }} Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <nav class="bg-indigo-600 text-white p-4 shadow-lg">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">{{ bot_name }} Admin</h1>
+            <div class="space-x-4">
+                <a href="/admin" class="hover:underline">Dashboard</a>
+                <a href="/admin/config" class="hover:underline">Config</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-6 space-y-8">
+        <!-- Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-blue-500">
+                <h3 class="text-gray-500 text-sm font-semibold uppercase">Total Revenue</h3>
+                <p class="text-3xl font-bold">Rs. {{ stats.total_revenue }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500">
+                <h3 class="text-gray-500 text-sm font-semibold uppercase">Total Sales</h3>
+                <p class="text-3xl font-bold">{{ stats.total_sales }}</p>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-purple-500">
+                <h3 class="text-gray-500 text-sm font-semibold uppercase">Active Chats (24h)</h3>
+                <p class="text-3xl font-bold">{{ stats.active_chats }}</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold mb-4">Sales by Package</h3>
+                <canvas id="packageChart"></canvas>
+            </div>
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h3 class="text-lg font-bold mb-4">Daily Sales Trend</h3>
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Live Chats Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+                <h3 class="text-lg font-bold text-gray-700">Live Conversations</h3>
+                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">Live Updates Active</span>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead class="bg-gray-100 text-gray-600 uppercase text-xs font-semibold">
+                        <tr>
+                            <th class="px-6 py-3">Phone</th>
+                            <th class="px-6 py-3">Stage</th>
+                            <th class="px-6 py-3">Package</th>
+                            <th class="px-6 py-3">AI Status</th>
+                            <th class="px-6 py-3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for chat in chats %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-6 py-4 font-medium">{{ chat.phone }}</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-800">{{ chat.stage }}</span>
+                            </td>
+                            <td class="px-6 py-4">{{ chat.selected_package or 'N/A' }}</td>
+                            <td class="px-6 py-4">
+                                {% if chat.ai_paused %}
+                                <span class="text-red-500 font-bold">Paused (Human)</span>
+                                {% else %}
+                                <span class="text-green-500 font-bold">Active (AI)</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 space-x-2">
+                                <button onclick="takeover('{{ chat.phone }}')" class="bg-orange-500 text-white px-3 py-1 rounded text-xs hover:bg-orange-600">Take Over</button>
+                                <button onclick="resume('{{ chat.phone }}')" class="bg-blue-500 text-white px-3 py-1 rounded text-xs hover:bg-blue-600">Resume AI</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Chart Initialization
+        const packageData = {{ package_sales | tojson }};
+        const trendData = {{ trend_sales | tojson }};
+
+        new Chart(document.getElementById('packageChart'), {
+            type: 'pie',
+            data: {
+                labels: Object.keys(packageData),
+                datasets: [{
+                    data: Object.values(packageData),
+                    backgroundColor: ['#4F46E5', '#10B981', '#F59E0B', '#EF4444']
+                }]
+            }
+        });
+
+        new Chart(document.getElementById('trendChart'), {
+            type: 'line',
+            data: {
+                labels: Object.keys(trendData),
+                datasets: [{
+                    label: 'Sales',
+                    data: Object.values(trendData),
+                    borderColor: '#4F46E5',
+                    tension: 0.1
+                }]
+            }
+        });
+
+        // Action Functions
+        async def takeover(phone) {
+            const res = await fetch(`/admin/takeover/${phone}`, { method: 'POST' });
+            if (res.ok) window.location.reload();
+        }
+
+        async def resume(phone) {
+            const res = await fetch(`/admin/resume/${phone}`, { method: 'POST' });
+            if (res.ok) window.location.reload();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[
+  {"role": "customer", "content": "Spotify premium available hai?"},
+  {"role": "ai", "content": "Ji sir, Spotify premium bilkul available hai. Ad-free music aur offline downloads ke saath."},
+  {"role": "customer", "content": "1 month ka kya rate hai?"},
+  {"role": "ai", "content": "Sir 1 month just Rs 200 ka hai. Aapka apna account premium ho jayega."},
+  {"role": "customer", "content": "Account link bhejna"},
+  {"role": "ai", "content": "Sir pehle payment karni hogi, phir main aapko invite link bhejunga. Easypaisa: 03001234567. Rs 200."},
+  {"role": "customer", "content": "Ok wait"},
+  {"role": "customer", "content": "[sends screenshot]"},
+  {"role": "ai", "content": "Thank you sir! Link bhej raha hun."}
+]

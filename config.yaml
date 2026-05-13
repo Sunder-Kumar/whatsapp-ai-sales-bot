@@ -1,0 +1,57 @@
+# Product Packages
+packages:
+  netflix_premium:
+    name: "Netflix Premium"
+    price_1month: 300
+    price_3month: 800
+    price_1year: 2800
+    countries: "All countries"
+    devices: "Mobile, TV, Laptop, PC"
+    description: "Ultra HD 4K + HDR, 4 Screens at a time."
+
+  spotify_premium:
+    name: "Spotify Premium"
+    price_1month: 200
+    price_3month: 550
+    price_1year: 1800
+    countries: "Global"
+    devices: "Mobile, Desktop, Speakers"
+    description: "Ad-free music, offline play, unlimited skips."
+
+  youtube_premium:
+    name: "YouTube Premium"
+    price_1month: 250
+    price_6month: 1200
+    price_1year: 2200
+    countries: "Global"
+    devices: "All devices"
+    description: "Ad-free YouTube, background play, YouTube Music included."
+
+# Payment Details
+payment_methods:
+  - "Easypaisa: 03001234567 (Name: Bot Admin)"
+  - "JazzCash: 03001234567 (Name: Bot Admin)"
+  - "Binance Pay ID: 123456789"
+  - "Binance TRC20: your_wallet_address_here"
+
+# Automation Settings
+follow_up_delays:
+  first: 3600       # 1 hour in seconds
+  second: 21600     # 6 hours
+  third: 86400      # 24 hours
+
+# Business Information
+bot_settings:
+  name: "Premium Stream Bot"
+  currency: "PKR"
+  support_hours: "24/7"
+  welcome_message: "Welcome to Premium Stream! How can I help you today?"
+
+# Frequently Asked Questions
+faqs:
+  - question: "Is it legal?"
+    answer: "We provide shared and private premium accounts according to platform terms."
+  - question: "How long does delivery take?"
+    answer: "Instant delivery after payment verification."
+  - question: "What if the account stops working?"
+    answer: "We provide a full replacement warranty for the duration of your subscription."

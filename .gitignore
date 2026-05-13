@@ -1,0 +1,32 @@
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment Variables
+.env
+
+# WhatsApp Session (IMPORTANT: Never share this)
+session/
+
+# Internal Project Notes
+Remaining.md
+
+# Databases
+*.db
+*.db-journal
+
+# Vector Store
+chroma_db/
+
+# Media / Temp files
+media/*
+!media/.gitkeep
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

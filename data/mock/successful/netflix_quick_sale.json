@@ -1,0 +1,10 @@
+[
+  {"role": "customer", "content": "Netflix ka price kya hai?"},
+  {"role": "ai", "content": "Sir Netflix premium 1 month Rs 300 ka hai. Mobile, laptop aur TV sab pe chalega."},
+  {"role": "customer", "content": "Malaysia me chalega?"},
+  {"role": "ai", "content": "Ji bilkul sir, Malaysia me properly kaam karta hai. Aap kab start karna chahte hain?"},
+  {"role": "customer", "content": "Abhi le leta hun"},
+  {"role": "ai", "content": "Perfect sir! Payment Easypaisa pe karein: 03001234567 — Rs 300. Screenshot bhejein, 5 minute mein setup ho jayega!"},
+  {"role": "customer", "content": "[sends screenshot]"},
+  {"role": "ai", "content": "Received sir, verify ho raha hai..."}
+]

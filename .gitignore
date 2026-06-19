@@ -24,6 +24,9 @@ chroma_db/
 media/*
 !media/.gitkeep
 
+# Real production data
+data/real/
+
 # Logs
 *.log
 

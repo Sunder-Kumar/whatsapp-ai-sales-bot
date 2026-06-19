@@ -1,0 +1,29 @@
+{
+  "id": "conv-netflix-starstream-0001",
+  "title": "Netflix shared screen sale - successful",
+  "participants": ["+92 300 2133846", "Star Streamz"],
+  "messages": [
+    {"sender": "Star Streamz", "text": "Hi! Please let us know how we can help you.", "timestamp": "2026-04-30T17:29:00Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Hello! Can I get more info on this?", "timestamp": "2026-04-30T17:29:15Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Final price of Netflix and combo both?", "timestamp": "2026-04-30T17:29:30Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Netflix + Prime: 300rs only 1month keliye", "timestamp": "2026-04-30T17:30:00Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Only Netflix?", "timestamp": "2026-04-30T17:32:00Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Only Netflix: 250rs only", "timestamp": "2026-04-30T17:32:15Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Jaldi bataye bhai", "timestamp": "2026-04-30T17:37:00Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Yar ap call karlo", "timestamp": "2026-04-30T17:42:00Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Netflix Private screen: 550rs Netflix shared screen: 200 rs", "timestamp": "2026-04-30T17:42:15Z", "type": "voice"},
+    {"sender": "+92 300 2133846", "text": "Itna time nai hota Pura din is Mai lagaye", "timestamp": "2026-04-30T17:42:30Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Mujay shared screen day do", "timestamp": "2026-04-30T17:42:45Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "200 theek hai", "timestamp": "2026-04-30T17:42:50Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Okay", "timestamp": "2026-04-30T17:43:00Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Payment Instructions:\n\nJazzCash:\nNumber: 03450806558\nName: Sundar Kumar\n\nEasypaisa:\nNumber: 03340975134\nName: Sunder Kumar", "timestamp": "2026-04-30T17:43:15Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Koi bank account day do", "timestamp": "2026-04-30T17:53:00Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Is Mai transfer nai ho rahay hai", "timestamp": "2026-04-30T17:53:15Z", "type": "text"},
+    {"sender": "+92 300 2133846", "text": "Ye lo", "timestamp": "2026-04-30T17:56:00Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "NETFLIX ACCOUNT DETAILS\nEmail: cologne00006@outlook.com\nPassword: orbit@88#10\nProfile 1 PIN: 1111", "timestamp": "2026-04-30T18:06:00Z", "type": "text"},
+    {"sender": "Star Streamz", "text": "Steps to Follow\nStep 1: Enter email address.\nStep 2: Tap Continue to proceed.\nStep 3: Go to Get Help.\nStep 4: Choose Use Password.", "timestamp": "2026-04-30T18:06:15Z", "type": "text"}
+  ],
+  "tags": ["sales", "streaming", "successful", "netflix", "shared_screen"],
+  "source": "whatsapp",
+  "created_at": "2026-04-30T17:29:00Z"
+}

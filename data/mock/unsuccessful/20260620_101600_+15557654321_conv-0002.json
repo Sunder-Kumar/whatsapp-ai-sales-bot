@@ -1,0 +1,13 @@
+{
+  "id": "conv-0002",
+  "title": "Customer inquiry - out of stock / rejected",
+  "participants": ["+15557654321", "agent"],
+  "messages": [
+    {"sender": "+15557654321", "text": "Do you have product Y?", "timestamp": "2026-06-20T10:16:00Z", "type": "text"},
+    {"sender": "agent", "text": "Sorry, product Y is currently out of stock.", "timestamp": "2026-06-20T10:16:30Z", "type": "text"},
+    {"sender": "+15557654321", "text": "Okay, thanks. Let me know when available.", "timestamp": "2026-06-20T10:16:45Z", "type": "text"}
+  ],
+  "tags": ["inquiry", "out_of_stock"],
+  "source": "whatsapp",
+  "created_at": "2026-06-20T10:16:00Z"
+}

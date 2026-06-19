@@ -31,8 +31,6 @@ packages:
 payment_methods:
   - "Easypaisa: 03001234567 (Name: Bot Admin)"
   - "JazzCash: 03001234567 (Name: Bot Admin)"
-  - "Binance Pay ID: 123456789"
-  - "Binance TRC20: your_wallet_address_here"
 
 # Automation Settings
 follow_up_delays:
@@ -42,10 +40,10 @@ follow_up_delays:
 
 # Business Information
 bot_settings:
-  name: "Premium Stream Bot"
+  name: "Star Streamz"
   currency: "PKR"
   support_hours: "24/7"
-  welcome_message: "Welcome to Premium Stream! How can I help you today?"
+  welcome_message: "Welcome to Star Streamz! How can I help you today?"
 
 # Frequently Asked Questions
 faqs:

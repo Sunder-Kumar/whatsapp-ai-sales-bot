@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-SESSION_DIR = "whatsapp-bot/session"
+SESSION_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "session")
 
 class WhatsAppSession:
     def __init__(self, headless=True):

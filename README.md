@@ -14,7 +14,8 @@ A professional-grade, autonomous WhatsApp Sales Bot designed to run 24/7 on a cl
 - **🤖 Autonomous AI Sales**: Uses Groq (Llama 3.3 70B) for lightning-fast, human-like sales conversations.
 - **🎙️ Voice Note Transcription**: Local Whisper-based STT (no API cost).
 - **📸 Automated OCR**: Detects and reads payment receipts using Tesseract.
-- **📱 Mobile Admin Control**: Manage everything via a dedicated Telegram Bot (Approve payments, Take over chats, View stats).
+- **📱 Mobile Admin Control**: Manage everything via a dedicated Telegram Bot.
+- **🤝 Human-First Co-pilot**: The AI waits **5 minutes** for the Admin to respond manually via the WhatsApp app. If you reply before the timer, the AI stays silent.
 - **🖥️ Web Dashboard**: Real-time analytics, revenue tracking, and live chat monitoring.
 - **🧠 RAG (Retrieval-Augmented Generation)**: Learns from your past successful sales conversations using ChromaDB.
 - **⏳ Smart Follow-Ups**: Automated 1h, 6h, and 24h follow-up sequences to recover leads.

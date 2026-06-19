@@ -5,6 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from db.models import Credential
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL").replace("sqlite:///", "sqlite+aiosqlite:///")

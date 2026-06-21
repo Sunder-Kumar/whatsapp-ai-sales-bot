@@ -5,6 +5,13 @@ from dotenv import load_dotenv
 load_dotenv()
 
 SESSION_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "session")
+LOGIN_SELECTORS = [
+    "#pane-side",
+    "div[contenteditable='true'][data-tab='3']",
+    "div[contenteditable='true'][data-tab='10']",
+    "div[title='Search or start new chat']",
+    "div[aria-label='Search or start new chat']",
+]
 
 class WhatsAppSession:
     def __init__(self, headless=True):
@@ -28,9 +35,19 @@ class WhatsAppSession:
             user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36"
         )
         
-        self.page = await self.browser_context.new_page()
-        await self.page.goto("https://web.whatsapp.com")
-        print("WhatsApp Web loaded.")
+        self.page = self.browser_context.pages[0] if self.browser_context.pages else await self.browser_context.new_page()
+        if self.page.url != "https://web.whatsapp.com/":
+            await self.page.goto("https://web.whatsapp.com")
+
+        await self.wait_until_ready()
+
+        current_url = self.page.url
+        print(f"WhatsApp Web loaded at: {current_url}")
+
+        if not await self.is_logged_in():
+            print("WhatsApp session not currently logged in. Please run python bot/scanner.py and scan the QR code.")
+        else:
+            print("WhatsApp session is logged in.")
 
     async def stop(self):
         """Stops the browser and playwright."""
@@ -42,12 +59,23 @@ class WhatsAppSession:
 
     async def is_logged_in(self):
         """Checks if the user is logged into WhatsApp Web."""
+        for selector in LOGIN_SELECTORS:
+            try:
+                if await self.page.query_selector(selector):
+                    return True
+            except Exception:
+                continue
+        return False
+
+    async def wait_until_ready(self, timeout=120000):
+        """Waits for WhatsApp Web to show the logged-in UI before health checks."""
         try:
-            # Check for the search bar or chat list
-            await self.page.wait_for_selector("div[contenteditable='true'][data-tab='3']", timeout=10000)
-            return True
-        except:
-            return False
+            await self.page.wait_for_selector(", ".join(LOGIN_SELECTORS), timeout=timeout)
+        except Exception:
+            try:
+                await self.page.wait_for_load_state("networkidle", timeout=30000)
+            except Exception:
+                pass
 
     async def get_page(self):
         return self.page

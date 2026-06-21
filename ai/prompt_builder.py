@@ -4,7 +4,10 @@ from typing import List, Dict
 from ai.language_detect import get_language_instruction
 
 class PromptBuilder:
-    def __init__(self, config_path: str = "whatsapp-bot/config.yaml"):
+    def __init__(self, config_path: str = None):
+        if config_path is None:
+            base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+            config_path = os.path.join(base_dir, "config.yaml")
         self.config_path = config_path
         self.config = self._load_config()
 

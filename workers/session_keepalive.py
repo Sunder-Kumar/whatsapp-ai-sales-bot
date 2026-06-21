@@ -11,21 +11,40 @@ async def session_keepalive(session: WhatsAppSession):
             page = await session.get_page()
             
             # Check if the main chat list is visible
-            # Selector for chat list or search bar
-            is_visible = await page.is_visible("div[contenteditable='true'][data-tab='3']")
-            
+            selectors = [
+                "#pane-side",
+                "div[contenteditable='true'][data-tab='3']",
+                "div[contenteditable='true'][data-tab='10']",
+                "div[title='Search or start new chat']",
+                "div[aria-label='Search or start new chat']"
+            ]
+
+            is_visible = False
+            for selector in selectors:
+                try:
+                    if await page.is_visible(selector):
+                        is_visible = True
+                        break
+                except Exception:
+                    continue
+
             if not is_visible:
                 print("⚠️ WhatsApp Web session appears disconnected. Refreshing...")
                 await page.reload()
                 await asyncio.sleep(15)
                 
                 # Check again after reload
-                if not await page.is_visible("div[contenteditable='true'][data-tab='3']"):
+                recovered = False
+                for selector in selectors:
+                    try:
+                        if await page.is_visible(selector):
+                            recovered = True
+                            break
+                    except Exception:
+                        continue
+                if not recovered:
                     print("🚨 ALERT: WhatsApp Web session is DOWN. Manual intervention required (scan QR).")
-                    # Here you would trigger a Telegram alert
             else:
-                # Optional: Simulate a small scroll or click to keep the session active
-                # print("Session healthy.")
                 pass
                 
         except Exception as e:

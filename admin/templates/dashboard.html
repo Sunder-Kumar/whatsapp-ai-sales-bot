@@ -12,7 +12,7 @@
         <div class="container mx-auto flex justify-between items-center">
             <h1 class="text-2xl font-bold">{{ bot_name }} Admin</h1>
             <div class="space-x-4">
-                <a href="/admin" class="hover:underline">Dashboard</a>
+                <a href="/admin/" class="hover:underline">Dashboard</a>
                 <a href="/admin/config" class="hover:underline">Config</a>
             </div>
         </div>
@@ -121,12 +121,12 @@
         });
 
         // Action Functions
-        async def takeover(phone) {
+        async function takeover(phone) {
             const res = await fetch(`/admin/takeover/${phone}`, { method: 'POST' });
             if (res.ok) window.location.reload();
         }
 
-        async def resume(phone) {
+        async function resume(phone) {
             const res = await fetch(`/admin/resume/${phone}`, { method: 'POST' });
             if (res.ok) window.location.reload();
         }

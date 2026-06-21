@@ -8,6 +8,22 @@ load_dotenv()
 # Path where the WhatsApp session will be saved
 SESSION_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "session")
 
+async def _is_logged_in(page):
+    if await page.query_selector("canvas[aria-label*='Scan']"):
+        return False
+
+    selectors = [
+        '#pane-side',
+        'div[contenteditable="true"][data-tab="3"]',
+        'div[contenteditable="true"][data-tab="10"]',
+        'div[title="Search or start new chat"]',
+        'div[aria-label="Search or start new chat"]'
+    ]
+    for selector in selectors:
+        if await page.query_selector(selector):
+            return True
+    return False
+
 async def run_scanner():
     """
     Launches a browser for the user to scan the WhatsApp QR code.
@@ -21,7 +37,6 @@ async def run_scanner():
 
     async with async_playwright() as p:
         print("Launching browser for QR scan...")
-        # Headless=False is required to see the QR code
         browser_context = await p.chromium.launch_persistent_context(
             user_data_dir=SESSION_DIR,
             headless=False,
@@ -32,26 +47,30 @@ async def run_scanner():
         page = browser_context.pages[0] if browser_context.pages else await browser_context.new_page()
         await page.goto("https://web.whatsapp.com")
 
-        # Detect whether the session is already logged in.
-        logged_in = False
-        try:
-            await page.wait_for_selector('#pane-side, div[contenteditable="true"][data-tab="3"]', timeout=10000)
-            logged_in = True
-        except:
-            logged_in = False
-
+        logged_in = await _is_logged_in(page)
         if not logged_in:
             print("\n" + "="*50)
             print("ACTION REQUIRED: Scan the QR code on your screen.")
             print("="*50 + "\n")
 
         try:
-            # Wait up to 2 minutes for login/chat interface to load
-            if not logged_in:
-                await page.wait_for_selector('#pane-side, div[contenteditable="true"][data-tab="3"]', timeout=120000)
-            print("Login successful! Session saved.")
+            await page.wait_for_load_state("networkidle", timeout=30000)
+            await page.wait_for_selector(
+                '#pane-side, div[contenteditable="true"][data-tab="3"], div[contenteditable="true"][data-tab="10"], div[title="Search or start new chat"], div[aria-label="Search or start new chat"]',
+                timeout=120000
+            )
+            current_url = page.url
+            page_title = await page.title()
+            print(f"Page URL after login: {current_url}")
+            print(f"Page title after login: {page_title}")
+
+            if await _is_logged_in(page):
+                print("Login successful! Session saved.")
+                print(f"Session files stored under: {SESSION_DIR}")
+            else:
+                print("Login completed, but WhatsApp did not show the expected interface. Please try again.")
         except Exception as e:
-            qr_present = await page.query_selector("canvas[aria-label='Scan me!']")
+            qr_present = await page.query_selector("canvas[aria-label*='Scan']")
             if qr_present:
                 print("Login timeout or failed: QR code still displayed. Please scan again.")
             else:

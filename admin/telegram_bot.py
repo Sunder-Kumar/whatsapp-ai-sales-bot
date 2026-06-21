@@ -24,8 +24,21 @@ class TelegramAdminBot:
     def __init__(self):
         self.app = ApplicationBuilder().token(TOKEN).build()
         self.redis = redis.from_url(REDIS_URL)
+        self._register_handlers()
 
-    async def start(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    def _register_handlers(self):
+        self.app.add_handler(CommandHandler("start", self.start_command))
+        self.app.add_handler(CommandHandler("takeover", self.takeover_command))
+        self.app.add_handler(CommandHandler("resume", self.resume_command))
+        self.app.add_handler(CommandHandler("pause_all", self.pause_all_command))
+        self.app.add_handler(CommandHandler("resume_all", self.resume_all_command))
+        self.app.add_handler(CommandHandler("stats", self.stats_command))
+        self.app.add_handler(CommandHandler("chats", self.chats_command))
+        self.app.add_handler(CommandHandler("session", self.session_command))
+        self.app.add_handler(CommandHandler("broadcast", self.broadcast_command))
+        self.app.add_handler(CallbackQueryHandler(self.handle_callback))
+
+    async def start_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
         if str(update.effective_chat.id) != ADMIN_CHAT_ID:
             await update.message.reply_text("Unauthorized.")
             return
@@ -183,18 +196,22 @@ class TelegramAdminBot:
         text = f"⚠️ **Takeover Requested**\n\n📱 Phone: `{phone}`\n❓ Reason: {reason}\n\nTap /takeover_{phone} to pause AI."
         await self.app.bot.send_message(chat_id=ADMIN_CHAT_ID, text=text, parse_mode='Markdown')
 
+    async def start(self):
+        await self.app.initialize()
+        await self.app.start()
+        if self.app.updater:
+            await self.app.updater.start_polling()
+        print("Telegram Admin Bot is polling...")
+
+    async def stop(self):
+        if self.app.updater:
+            await self.app.updater.shutdown()
+        if self.app.running:
+            await self.app.stop()
+        if self.app._initialized:  # noqa: SLF001
+            await self.app.shutdown()
+
     def run(self):
-        self.app.add_handler(CommandHandler("start", self.start))
-        self.app.add_handler(CommandHandler("takeover", self.takeover_command))
-        self.app.add_handler(CommandHandler("resume", self.resume_command))
-        self.app.add_handler(CommandHandler("pause_all", self.pause_all_command))
-        self.app.add_handler(CommandHandler("resume_all", self.resume_all_command))
-        self.app.add_handler(CommandHandler("stats", self.stats_command))
-        self.app.add_handler(CommandHandler("chats", self.chats_command))
-        self.app.add_handler(CommandHandler("session", self.session_command))
-        self.app.add_handler(CommandHandler("broadcast", self.broadcast_command))
-        self.app.add_handler(CallbackQueryHandler(self.handle_callback))
-        
         print("Telegram Admin Bot is polling...")
         self.app.run_polling()
 

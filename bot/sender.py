@@ -1,5 +1,6 @@
 import asyncio
 import random
+import re
 from bot.session import WhatsAppSession
 
 class MessageSender:
@@ -20,13 +21,20 @@ class MessageSender:
         thinking_delay = random.uniform(1.0, 2.5)
         await asyncio.sleep(thinking_delay)
 
-        # Navigate to chat or ensure it's focused
-        # Note: In a real production loop, the monitor might already have the chat open.
-        # But for reliability, we can use the URL method.
-        url = f"https://web.whatsapp.com/send?phone={phone}"
-        if page.url != url:
+        input_selector = "div[contenteditable='true'][data-tab='10']"
+        digits_only = re.sub(r"\D", "", phone or "")
+
+        # Saved contacts often appear as names (for example "SunderKumar").
+        # The WhatsApp URL method only works with phone numbers, so for contact
+        # names we reply in the chat that the monitor already opened.
+        if len(digits_only) >= 8:
+            url = f"https://web.whatsapp.com/send?phone={digits_only}"
+            print(f"Opening WhatsApp chat by phone: {digits_only}")
             await page.goto(url)
-            await page.wait_for_selector("div[contenteditable='true'][data-tab='10']", timeout=15000)
+        else:
+            print(f"Replying in currently open chat for contact: {phone}")
+
+        await page.wait_for_selector(input_selector, timeout=15000)
 
         # 3. Typing simulation
         # Calculate typing delay proportional to length
@@ -36,7 +44,6 @@ class MessageSender:
 
         # Focus input and show "typing..."
         # Selector for WhatsApp Web input field
-        input_selector = "div[contenteditable='true'][data-tab='10']"
         await page.click(input_selector)
         await asyncio.sleep(typing_delay)
 

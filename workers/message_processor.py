@@ -1,6 +1,7 @@
 import asyncio
 import json
 import redis.asyncio as redis
+from redis.exceptions import ConnectionError as RedisConnectionError
 import os
 from datetime import datetime
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -32,16 +33,38 @@ class MessageProcessor:
         self.sender = sender
         self.redis = redis.from_url(REDIS_URL)
         self.prompt_builder = PromptBuilder()
-        
+
+    async def _wait_for_redis(self):
+        while True:
+            try:
+                await self.redis.ping()
+                return
+            except Exception as e:
+                print(f"Redis connection unavailable: {e}. Retrying in 5 seconds...")
+                await asyncio.sleep(5)
+
     async def start(self):
         print("Message Processor started. Listening for messages...")
+        await self._wait_for_redis()
+
         while True:
-            # BRPOP blocks until a message is available in the queue
-            msg = await self.redis.brpop("incoming_queue", timeout=5)
-            if msg:
-                # msg is a tuple (queue_name, data)
-                payload = json.loads(msg[1].decode())
-                asyncio.create_task(self.process_message(payload))
+            try:
+                # BRPOP blocks until a message is available in the queue
+                msg = await self.redis.brpop("incoming_queue", timeout=5)
+                if msg:
+                    # msg is a tuple (queue_name, data)
+                    payload = json.loads(msg[1].decode())
+                    print(f"Received queued message for {payload.get('phone')}: {payload.get('type')}")
+                    asyncio.create_task(self.process_message(payload))
+            except RedisConnectionError as e:
+                print(f"Redis connection error in message processor: {e}. Reconnecting...")
+                await self._wait_for_redis()
+            except asyncio.CancelledError:
+                print("Message processor cancelled.")
+                raise
+            except Exception as e:
+                print(f"Unexpected error in message processor loop: {e}")
+                await asyncio.sleep(5)
 
     async def process_message(self, payload):
         phone = payload["phone"]
@@ -129,6 +152,7 @@ class MessageProcessor:
 
             # 10. Send Reply
             await self.sender.send_text(phone, reply)
+            print(f"AI reply sent to {phone}.")
 
             # 11. Update State
             state["last_message_at"] = datetime.now().isoformat()
@@ -143,4 +167,12 @@ class MessageProcessor:
 
 async def start_processor(sender: MessageSender):
     processor = MessageProcessor(sender)
-    await processor.start()
+    while True:
+        try:
+            await processor.start()
+        except asyncio.CancelledError:
+            print("Message processor task cancelled.")
+            return
+        except Exception as e:
+            print(f"Message processor crashed: {e}. Retrying in 5 seconds...")
+            await asyncio.sleep(5)

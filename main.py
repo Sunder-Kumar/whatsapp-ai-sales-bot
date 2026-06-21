@@ -31,6 +31,7 @@ from workers.session_keepalive import session_keepalive
 from workers.message_processor import start_processor as start_message_processor
 from bot.session import WhatsAppSession
 from bot.sender import MessageSender
+from bot.monitor import MessageMonitor
 
 from admin.telegram_bot import TelegramAdminBot
 
@@ -38,36 +39,43 @@ from admin.telegram_bot import TelegramAdminBot
 whatsapp_session = WhatsAppSession(headless=True)
 message_sender = MessageSender(whatsapp_session)
 telegram_admin_bot = TelegramAdminBot()
+message_monitor = MessageMonitor(whatsapp_session, os.getenv("REDIS_URL", "redis://localhost:6379"))
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup logic
     print("Application starting up...")
-    
+
     # 1. Start WhatsApp Session
     await whatsapp_session.start()
-    
+
     # 2. Start Session Keep-alive in background
     asyncio.create_task(session_keepalive(whatsapp_session))
-    
+
+    # 2b. Start WhatsApp message monitor in background
+    message_monitor_task = asyncio.create_task(message_monitor.start())
+
     # 3. Start Follow-up Scheduler
     await start_followup_scheduler(message_sender)
-    
+
     # 4. Start Message Processor
-    asyncio.create_task(start_message_processor(message_sender))
-    
-    # 5. Start Telegram Bot Polling in background
-    asyncio.create_task(telegram_admin_bot.app.initialize())
-    asyncio.create_task(telegram_admin_bot.app.start())
-    asyncio.create_task(telegram_admin_bot.app.updater.start_polling())
-    print("Telegram Admin Bot started.")
-    
+    message_processor_task = asyncio.create_task(start_message_processor(message_sender))
+
+    # 5. Start Telegram Bot in the background if configured
+    telegram_task = asyncio.create_task(telegram_admin_bot.start())
+    print("Telegram Admin Bot startup task created.")
+
     yield
-    # Shutdown logic
+
     print("Application shutting down...")
+    message_monitor_task.cancel()
+    message_processor_task.cancel()
+    telegram_task.cancel()
+    await asyncio.gather(message_monitor_task, message_processor_task, telegram_task, return_exceptions=True)
     await whatsapp_session.stop()
-    await telegram_admin_bot.app.stop()
-    await telegram_admin_bot.app.shutdown()
+    try:
+        await telegram_admin_bot.stop()
+    except Exception as e:
+        print(f"Telegram Admin Bot shutdown error: {e}")
 
 from admin.dashboard import router as admin_router
 
